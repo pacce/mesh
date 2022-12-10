@@ -8,19 +8,20 @@
 namespace qi = boost::spirit::qi;
 namespace mesh {
     template <typename Precision> using Node = geometry::d3::Point<Precision>;
-
-namespace nodes {
+namespace node {
 namespace decoder {
     template <typename Iterator, typename Precision>
     struct node : qi::grammar<Iterator, std::vector<Precision>()> {
         node() : node::base_type(rule) {
-            rule %= qi::skip(qi::space)[qi::repeat(3)[qi::float_]];
+            rule %= qi::skip(qi::space)[
+                qi::repeat(3)[qi::float_]
+            ];
         }
 
         qi::rule<Iterator, std::vector<Precision>()> rule;
     };
 } // namespace decoder
-} // namespace nodes
+} // namespace node
 } // namespace mesh
 
 namespace boost {
@@ -31,7 +32,7 @@ namespace traits {
         typedef std::vector<Precision> type;
 
         static type
-        pre(mesh::Node<Precision>& n) { return {}; }
+        pre(mesh::Node<Precision>&) { return {}; }
 
         static void
         post(mesh::Node<Precision>& n, type const& xs) {
@@ -39,7 +40,7 @@ namespace traits {
         }
 
         static void
-        fail(mesh::Node<Precision>& n) {}
+        fail(mesh::Node<Precision>&) {}
     };
 } // namespace traits
 } // namespace spirit

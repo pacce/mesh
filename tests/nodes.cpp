@@ -9,7 +9,7 @@ TEST(Node, Line) {
 
     using Iterator = std::string::iterator;
 
-    mesh::nodes::decoder::node<Iterator, float> grammar;
+    mesh::node::decoder::node<Iterator, float> grammar;
     bool result = boost::spirit::qi::parse(ss.begin(), ss.end(), grammar, actual);
 
     ASSERT_TRUE(result);
