@@ -15,6 +15,7 @@ namespace node {
     template <typename Precision> using Map     = std::map<std::size_t, Node<Precision>>;
 namespace decoder {
     namespace qi = boost::spirit::qi;
+
     template <typename Iterator, typename Precision>
     struct node : qi::grammar<Iterator, std::vector<Precision>> {
         node() : node::base_type(rule) {

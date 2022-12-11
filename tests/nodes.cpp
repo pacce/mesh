@@ -32,7 +32,7 @@ TEST(Nodes, Line) {
 }
 
 TEST(Nodes, Lines) {
-    std::string ss = 
+    std::string ss =
         "$Nodes\n"
         "1 0.0 0.0 0.0\n"
         "2 1.0 0.0 0.0\n"
