@@ -2,6 +2,7 @@
 #define MESH_NODES_HPP__
 
 #include <boost/fusion/adapted/std_pair.hpp>
+#include <boost/phoenix/phoenix.hpp>
 #include <boost/spirit/include/qi.hpp>
 #include <geometry/geometry.hpp>
 #include <map>
@@ -34,13 +35,21 @@ namespace decoder {
         qi::rule<Iterator, Pair<Precision>> rule;
     };
 
-    // template <typename Iterator, typename Precision>
-    // struct map : qi::grammar<Iterator, Map<Precision>()> {
-    //     map() : map::base_type(rule) {
-    //     }
+    template <typename Iterator, typename Precision>
+    struct nodes : qi::grammar<Iterator, Map<Precision>()> {
+        nodes() : nodes::base_type(rule) {
+            rule %= qi::skip(qi::eol)
+                [  qi::lit("$Nodes")
+                >> qi::omit[qi::int_]
+                >> *entries
+                >> qi::lit("$EndNodes")
+                ]
+                ;
+        }
 
-    //     qi::rule<Iterator, Map<Precision>()>    rule;
-    // };
+        line<Iterator, Precision>               entries;
+        qi::rule<Iterator, Map<Precision>()>    rule;
+    };
 } // namespace decoder
 } // namespace node
 } // namespace mesh
