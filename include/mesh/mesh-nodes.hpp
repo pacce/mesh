@@ -11,8 +11,10 @@
 namespace mesh {
     template <typename Precision> using Node = geometry::d3::Point<Precision>;
 namespace node {
-    template <typename Precision> using Pair    = std::pair<std::size_t, Node<Precision>>;
-    template <typename Precision> using Map     = std::map<std::size_t, Node<Precision>>;
+    using Number = std::size_t;
+
+    template <typename Precision> using Pair    = std::pair<Number, Node<Precision>>;
+    template <typename Precision> using Map     = std::map<Number, Node<Precision>>;
 namespace decoder {
     namespace qi = boost::spirit::qi;
 
