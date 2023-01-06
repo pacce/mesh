@@ -12,8 +12,8 @@ TEST(Elements, Line) {
     mesh::element::decoder::element<Iterator> grammar;
     bool result = boost::spirit::qi::parse(ss.begin(), ss.end(), grammar, actual);
 
-    std::cout << expected << std::endl;
-    ASSERT_TRUE(false);
+    ASSERT_TRUE(result);
+    EXPECT_EQ(actual, expected);
 }
 
 

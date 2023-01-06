@@ -11,28 +11,29 @@
 namespace mesh {
 namespace element {
     enum class Type {
-          LINE2
-        , TRIANGLE3
-        , QUADRANGLE4
-        , TETRATHEDRON4
-        , HEXAHEDRON8
-        , PRISM6
-        , PYRAMID5
-        , LINE3
-        , TRIANGLE6
-        , QUADRANGLE9
-        , TETRAHEDRON10
-        , HEXAHEDRON27
-        , PRISM18
-        , PYRAMID14
-        , POINT1
-        , QUADRANGLE8
-        , HEXAHEDRON20
-        , PRISM15
-        , PYRAMID13
+          LINE2         =  1
+        , TRIANGLE3     =  2
+        , QUADRANGLE4   =  3
+        , TETRATHEDRON4 =  4
+        , HEXAHEDRON8   =  5
+        , PRISM6        =  6
+        , PYRAMID5      =  7
+        , LINE3         =  8
+        , TRIANGLE6     =  9
+        , QUADRANGLE9   = 10
+        , TETRAHEDRON10 = 11
+        , HEXAHEDRON27  = 12
+        , PRISM18       = 13
+        , PYRAMID14     = 14
+        , POINT1        = 15
+        , QUADRANGLE8   = 16
+        , HEXAHEDRON20  = 17
+        , PRISM15       = 18
+        , PYRAMID13     = 91
     };
 
-    using Tag = std::size_t;
+    using Tag   = std::size_t;
+    using Tags  = std::vector<Tag>;
 } // namespace element
 
     struct Element {
@@ -88,6 +89,40 @@ namespace element {
             for (const node::Number& node : e.nodes) { os << node << " "; }
             return os;
         }
+
+        friend bool
+        operator==(const Element& lhs, const Element& rhs) {
+            auto tags = [](const element::Tags& lh, const element::Tags& rh) {
+                if (lh.size() == rh.size()) {
+                    for (std::size_t i = 0; i < lh.size(); i++) {
+                        if (lh[i] != rh[i]) { return false; }
+                    }
+                } else {
+                    return false;
+                }
+                return true;
+            };
+
+            auto nodes = [](const std::vector<node::Number>& lh, const std::vector<node::Number>& rh) {
+                if (lh.size() == rh.size()) {
+                    for (std::size_t i = 0; i < lh.size(); i++) {
+                        if (lh[i] != rh[i]) { return false; }
+                    }
+                } else {
+                    return false;
+                }
+                return true;
+            };
+            return lhs.type == rhs.type
+                && tags(lhs.tags, rhs.tags)
+                && nodes(lhs.nodes, rhs.nodes)
+                ;
+        }
+
+        friend bool
+        operator!=(const Element& lhs, const Element& rhs) {
+            return !(lhs == rhs);
+        }
     };
 } // namespace mesh
 
@@ -127,7 +162,6 @@ namespace decoder {
                     >> qi::repeat[qi::int_]
                     ]
                     ;
-            BOOST_SPIRIT_DEBUG_NODE(rule);
         }
         tags<Iterator>              ts;
         qi::rule<Iterator, Element> rule;
@@ -136,45 +170,4 @@ namespace decoder {
 } // namespace element
 } // namespace mesh
 
-namespace boost {
-namespace spirit {
-namespace traits {
-    template <>
-    struct transform_attribute<mesh::element::Type, std::size_t, boost::spirit::qi::domain> {
-        typedef std::size_t type;
-
-        static type
-        pre(mesh::element::Type&) { return {}; }
-
-        static void
-        post(mesh::element::Type& t, type const& size) {
-            switch(size) {
-                case  1: { t = mesh::element::Type::LINE2;          break; }
-                case  2: { t = mesh::element::Type::TRIANGLE3;      break; }
-                case  3: { t = mesh::element::Type::QUADRANGLE4;    break; }
-                case  4: { t = mesh::element::Type::TETRATHEDRON4;  break; }
-                case  5: { t = mesh::element::Type::HEXAHEDRON8;    break; }
-                case  6: { t = mesh::element::Type::PRISM6;         break; }
-                case  7: { t = mesh::element::Type::PYRAMID5;       break; }
-                case  8: { t = mesh::element::Type::LINE3;          break; }
-                case  9: { t = mesh::element::Type::TRIANGLE6;      break; }
-                case 10: { t = mesh::element::Type::QUADRANGLE9;    break; }
-                case 11: { t = mesh::element::Type::TETRAHEDRON10;  break; }
-                case 12: { t = mesh::element::Type::HEXAHEDRON27;   break; }
-                case 13: { t = mesh::element::Type::PRISM18;        break; }
-                case 14: { t = mesh::element::Type::PYRAMID14;      break; }
-                case 15: { t = mesh::element::Type::POINT1;         break; }
-                case 16: { t = mesh::element::Type::QUADRANGLE8;    break; }
-                case 17: { t = mesh::element::Type::HEXAHEDRON20;   break; }
-                case 18: { t = mesh::element::Type::PRISM15;        break; }
-                case 19: { t = mesh::element::Type::PYRAMID13;      break; }
-            }
-        }
-
-        static void
-        fail(mesh::element::Type&) {}
-    };
-} // namespace traits
-} // namespace spirit
-} // namespace boost
 #endif // MESH_ELEMENTS_HPP__
