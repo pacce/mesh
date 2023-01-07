@@ -44,6 +44,18 @@ namespace decoder {
         qi::rule<Iterator, Mesh<Precision>>                 rule;
     };
 }
+
+    template <typename Precision, typename Iterator>
+    Mesh<Precision>
+    decode(const Iterator begin, const Iterator end) {
+        mesh::Mesh<Precision> msh;
+
+        mesh::decoder::parse<Iterator, Precision> grammar;
+        if (!boost::spirit::qi::parse(begin, end, grammar, msh)) {
+            throw std::runtime_error("failed to decode mesh file");
+        }
+        return msh;
+    }
 } // namespace mesh
 
 #endif // MESH_HPP__
