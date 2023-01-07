@@ -156,6 +156,118 @@ TEST(Element, Tetrahedron10) {
     EXPECT_EQ(actual, expected);
 }
 
+TEST(Element, Hexahedron27) {
+    std::string ss = "12 2 99 2 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27";
+    using Iterator = std::string::iterator;
+
+    mesh::Element expected  = {mesh::element::Type::HEXAHEDRON27, {99, 2}, {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27}};
+    mesh::Element actual    = {};
+
+    mesh::element::decoder::element<Iterator> grammar;
+    bool result = boost::spirit::qi::parse(ss.begin(), ss.end(), grammar, actual);
+
+    ASSERT_TRUE(result);
+    EXPECT_EQ(actual, expected);
+}
+
+TEST(Element, Prism18) {
+    std::string ss = "13 2 99 2 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18";
+    using Iterator = std::string::iterator;
+
+    mesh::Element expected  = {mesh::element::Type::PRISM18, {99, 2}, {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18}};
+    mesh::Element actual    = {};
+
+    mesh::element::decoder::element<Iterator> grammar;
+    bool result = boost::spirit::qi::parse(ss.begin(), ss.end(), grammar, actual);
+
+    ASSERT_TRUE(result);
+    EXPECT_EQ(actual, expected);
+}
+
+TEST(Element, Pyramid14) {
+    std::string ss = "14 2 99 2 1 2 3 4 5 6 7 8 9 10 11 12 13 14";
+    using Iterator = std::string::iterator;
+
+    mesh::Element expected  = {mesh::element::Type::PYRAMID14, {99, 2}, {1,2,3,4,5,6,7,8,9,10,11,12,13,14}};
+    mesh::Element actual    = {};
+
+    mesh::element::decoder::element<Iterator> grammar;
+    bool result = boost::spirit::qi::parse(ss.begin(), ss.end(), grammar, actual);
+
+    ASSERT_TRUE(result);
+    EXPECT_EQ(actual, expected);
+}
+
+TEST(Element, Point1) {
+    std::string ss = "15 2 99 2 1";
+    using Iterator = std::string::iterator;
+
+    mesh::Element expected  = {mesh::element::Type::POINT1, {99, 2}, {1}};
+    mesh::Element actual    = {};
+
+    mesh::element::decoder::element<Iterator> grammar;
+    bool result = boost::spirit::qi::parse(ss.begin(), ss.end(), grammar, actual);
+
+    ASSERT_TRUE(result);
+    EXPECT_EQ(actual, expected);
+}
+
+TEST(Element, Quadrangle8) {
+    std::string ss = "16 2 99 2 1 2 3 4 5 6 7 8";
+    using Iterator = std::string::iterator;
+
+    mesh::Element expected  = {mesh::element::Type::QUADRANGLE8, {99, 2}, {1, 2, 3, 4, 5, 6, 7, 8}};
+    mesh::Element actual    = {};
+
+    mesh::element::decoder::element<Iterator> grammar;
+    bool result = boost::spirit::qi::parse(ss.begin(), ss.end(), grammar, actual);
+
+    ASSERT_TRUE(result);
+    EXPECT_EQ(actual, expected);
+}
+
+TEST(Element, Hexahedron20) {
+    std::string ss = "17 2 99 2 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20";
+    using Iterator = std::string::iterator;
+
+    mesh::Element expected  = {mesh::element::Type::HEXAHEDRON20, {99, 2}, {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20}};
+    mesh::Element actual    = {};
+
+    mesh::element::decoder::element<Iterator> grammar;
+    bool result = boost::spirit::qi::parse(ss.begin(), ss.end(), grammar, actual);
+
+    ASSERT_TRUE(result);
+    EXPECT_EQ(actual, expected);
+}
+
+TEST(Element, Prism15) {
+    std::string ss = "18 2 99 2 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15";
+    using Iterator = std::string::iterator;
+
+    mesh::Element expected  = {mesh::element::Type::PRISM15, {99, 2}, {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15}};
+    mesh::Element actual    = {};
+
+    mesh::element::decoder::element<Iterator> grammar;
+    bool result = boost::spirit::qi::parse(ss.begin(), ss.end(), grammar, actual);
+
+    ASSERT_TRUE(result);
+    EXPECT_EQ(actual, expected);
+}
+
+TEST(Element, Pyramid13) {
+    std::string ss = "19 2 99 2 1 2 3 4 5 6 7 8 9 10 11 12 13";
+    using Iterator = std::string::iterator;
+
+    mesh::Element expected  = {mesh::element::Type::PYRAMID13, {99, 2}, {1,2,3,4,5,6,7,8,9,10,11,12,13}};
+    mesh::Element actual    = {};
+
+    mesh::element::decoder::element<Iterator> grammar;
+    bool result = boost::spirit::qi::parse(ss.begin(), ss.end(), grammar, actual);
+
+    ASSERT_TRUE(result);
+    EXPECT_EQ(actual, expected);
+}
+
 TEST(Elements, Parse) {
     std::string ss = 
         "$Elements\n"
