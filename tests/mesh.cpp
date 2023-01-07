@@ -76,7 +76,6 @@ TEST(Mesh, Iterator) {
         "2 3 2 99 2 2 5 6 3\n"
         "$EndElements\n"
         ;
-    using Iterator = std::string::iterator;
 
     mesh::node::Map<float> nodes = {
           {1, mesh::Node<float>(0.0f, 0.0f, 0.0f)}

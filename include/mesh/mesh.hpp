@@ -2,6 +2,9 @@
 #define MESH_HPP__
 
 #include <boost/spirit/include/qi.hpp>
+#include <filesystem>
+#include <fstream>
+#include <sstream>
 
 #include "mesh-elements.hpp"
 #include "mesh-nodes.hpp"
@@ -55,6 +58,16 @@ namespace decoder {
             throw std::runtime_error("failed to decode mesh file");
         }
         return msh;
+    }
+
+    template <typename Precision>
+    Mesh<Precision>
+    decode(const std::filesystem::path& path) {
+        std::ifstream handle(path);
+        if (!handle.is_open()) { throw std::runtime_error("could not open mesh file"); }
+        handle.unsetf(std::ios::skipws);
+
+        return mesh::decode<Precision>(boost::spirit::istream_iterator(handle), {});
     }
 } // namespace mesh
 
