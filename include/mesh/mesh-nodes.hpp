@@ -41,16 +41,19 @@ namespace decoder {
     template <typename Iterator, typename Precision>
     struct nodes : qi::grammar<Iterator, Map<Precision>()> {
         nodes() : nodes::base_type(rule) {
+            using boost::phoenix::ref;
+
+            std::size_t count = 0;
             rule %= qi::skip(qi::eol)
-                [  qi::lit("$Nodes")
-                >> qi::omit[qi::int_]
-                >> *entries
-                >> qi::lit("$EndNodes")
+                [   qi::lit("$Nodes")
+                >>  qi::omit[qi::int_[ref(count) = qi::_1]]
+                >>  qi::repeat(ref(count))[entry]
+                >>  qi::lit("$EndNodes")
                 ]
                 ;
         }
 
-        line<Iterator, Precision>               entries;
+        line<Iterator, Precision>               entry;
         qi::rule<Iterator, Map<Precision>()>    rule;
     };
 } // namespace decoder
