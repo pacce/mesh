@@ -5,6 +5,7 @@
 #include <boost/spirit/include/qi.hpp>
 #include <cstdint>
 #include <fstream>
+#include <map>
 
 #include "mesh-nodes.hpp"
 
@@ -29,7 +30,7 @@ namespace element {
         , QUADRANGLE8   = 16
         , HEXAHEDRON20  = 17
         , PRISM15       = 18
-        , PYRAMID13     = 91
+        , PYRAMID13     = 19
     };
 
     using Tag   = std::size_t;
@@ -135,6 +136,10 @@ BOOST_FUSION_ADAPT_STRUCT(
 
 namespace mesh {
 namespace element {
+    using Number    = std::size_t;
+    using Pair      = std::pair<Number, Element>;
+    using Map       = std::map<Number, Element>;
+
 namespace decoder {
     namespace qi = boost::spirit::qi;
 
@@ -157,14 +162,61 @@ namespace decoder {
     struct element : qi::grammar<Iterator, Element> {
         element() : element::base_type(rule) {
             rule    %= qi::skip(qi::space)
-                    [  qi::int_
-                    >> ts
-                    >> qi::repeat[qi::int_]
+                    [  (qi::int_( 1) >> ts >> qi::repeat( 2)[qi::int_])   // Line 2
+                    |  (qi::int_( 2) >> ts >> qi::repeat( 3)[qi::int_])   // Triangle 3
+                    |  (qi::int_( 3) >> ts >> qi::repeat( 4)[qi::int_])   // Quadrangle 4
+                    |  (qi::int_( 4) >> ts >> qi::repeat( 4)[qi::int_])   // Tetrahedron 4
+                    |  (qi::int_( 5) >> ts >> qi::repeat( 8)[qi::int_])   // Hexahedron 8
+                    |  (qi::int_( 6) >> ts >> qi::repeat( 6)[qi::int_])   // Prism 6
+                    |  (qi::int_( 7) >> ts >> qi::repeat( 5)[qi::int_])   // Pyramid 5
+                    |  (qi::int_( 8) >> ts >> qi::repeat( 3)[qi::int_])   // Line 3
+                    |  (qi::int_( 9) >> ts >> qi::repeat( 6)[qi::int_])   // Triangle 6
+                    |  (qi::int_(10) >> ts >> qi::repeat( 9)[qi::int_])   // Quadrangle 9
+                    |  (qi::int_(11) >> ts >> qi::repeat(10)[qi::int_])   // Tetrahedron 10
+                    |  (qi::int_(12) >> ts >> qi::repeat(27)[qi::int_])   // Hexahedron 27
+                    |  (qi::int_(13) >> ts >> qi::repeat(18)[qi::int_])   // Prism 18
+                    |  (qi::int_(14) >> ts >> qi::repeat(14)[qi::int_])   // Pyramid 14
+                    |  (qi::int_(15) >> ts >> qi::repeat( 1)[qi::int_])   // Point 1
+                    |  (qi::int_(16) >> ts >> qi::repeat( 8)[qi::int_])   // Quadrangle 8
+                    |  (qi::int_(17) >> ts >> qi::repeat(20)[qi::int_])   // Hexahedron 20
+                    |  (qi::int_(18) >> ts >> qi::repeat(15)[qi::int_])   // Prism 15
+                    |  (qi::int_(19) >> ts >> qi::repeat(13)[qi::int_])   // Pyramid 13
                     ]
                     ;
         }
         tags<Iterator>              ts;
         qi::rule<Iterator, Element> rule;
+    };
+
+    template <typename Iterator>
+    struct line : qi::grammar<Iterator, Pair> {
+        line() : line::base_type(rule) {
+            rule    %= qi::skip(qi::space)
+                    [   qi::int_
+                    >>  entry
+                    ]
+                    ;
+        }
+        element<Iterator>           entry;
+        qi::rule<Iterator, Pair>    rule;
+    };
+
+    template <typename Iterator>
+    struct elements : qi::grammar<Iterator, Map> {
+        elements() : elements::base_type(rule) {
+            using boost::phoenix::ref;
+
+            std::size_t count = 0;
+            rule    %=  qi::skip(qi::eol)
+                    [   qi::lit("$Elements")
+                    >>  qi::omit[qi::int_[ref(count) = qi::_1]]
+                    >>  qi::repeat(ref(count))[entry]
+                    >>  qi::lit("$EndElements")
+                    ]
+                    ;
+        }
+        line<Iterator>          entry;
+        qi::rule<Iterator, Map> rule;
     };
 } // namespace decoder
 } // namespace element
