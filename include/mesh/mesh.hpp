@@ -8,6 +8,7 @@
 
 #include "mesh-elements.hpp"
 #include "mesh-nodes.hpp"
+#include "mesh-physical.hpp"
 #include "mesh-version.hpp"
 
 namespace mesh {
