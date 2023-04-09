@@ -14,18 +14,20 @@
 namespace mesh {
     template <typename Precision>
     struct Mesh {
-        mesh::Version<Precision>    version;
-        mesh::node::Map<Precision>  nodes;
-        mesh::element::Map          element;
+        mesh::Version<Precision>            version;
+        std::optional<physical::Entities>   physical;
+        mesh::node::Map<Precision>          nodes;
+        mesh::element::Map                  element;
     };
 } // namespace mesh
 
 BOOST_FUSION_ADAPT_TPL_STRUCT(
         (Precision),
         (mesh::Mesh) (Precision),
-        (mesh::Version<Precision>,      version)
-        (mesh::node::Map<Precision>,    nodes)
-        (mesh::element::Map,            element)
+        (mesh::Version<Precision>,                  version)
+        (std::optional<mesh::physical::Entities>,   physical)
+        (mesh::node::Map<Precision>,                nodes)
+        (mesh::element::Map,                        element)
         );
 
 namespace mesh {
@@ -36,12 +38,14 @@ namespace decoder {
     struct parse : qi::grammar<Iterator, Mesh<Precision>> {
         parse() : parse::base_type(rule) {
             rule    %= version
+                    >> -physical
                     >> node
                     >> elements
                     ;
         }
 
         mesh::version::decoder::format<Iterator, Precision> version;
+        mesh::physical::decoder::entities<Iterator>         physical;
         mesh::node::decoder::nodes<Iterator, Precision>     node;
         mesh::element::decoder::elements<Iterator>          elements;
 

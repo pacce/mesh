@@ -3,10 +3,16 @@
 #include <mesh/mesh.hpp>
 
 TEST(Mesh, Grammar) {
-    std::string ss = 
+    std::string ss =
         "$MeshFormat\n"
         "2.2 0 8\n"
         "$EndMeshFormat\n"
+        "$PhysicalNames\n"
+        "3\n"
+        "0 1 \"First\"\n"
+        "1 2 \"Second\"\n"
+        "2 3 \"Third\"\n"
+        "$EndPhysicalNames\n"
         "$Nodes\n"
         "6\n"
         "1 0.0 0.0 0.0\n"
@@ -34,7 +40,12 @@ TEST(Mesh, Grammar) {
           {1, {mesh::element::Type::QUADRANGLE4, {99, 2}, {1, 2, 3, 4}}}
         , {2, {mesh::element::Type::QUADRANGLE4, {99, 2}, {2, 5, 6, 3}}}
     };
-    mesh::Mesh<float> expected = {{2.2, 0, 8}, nodes, elements};
+    mesh::physical::Entities entities = {
+          {0, 1, "First"}
+        , {1, 2, "Second"}
+        , {2, 3, "Third"}
+    };
+    mesh::Mesh<float> expected = {{2.2, 0, 8}, entities, nodes, elements};
     mesh::Mesh<float> actual;
 
     using Iterator = std::string::iterator;
@@ -50,6 +61,8 @@ TEST(Mesh, Grammar) {
         EXPECT_EQ(actual.nodes[k], v);
     }
 
+    ASSERT_EQ(actual.physical, expected.physical);
+
     ASSERT_EQ(actual.element.size(), expected.element.size());
     for (const auto& [k, v] : expected.element) {
         EXPECT_EQ(actual.element[k], v);
@@ -57,7 +70,7 @@ TEST(Mesh, Grammar) {
 }
 
 TEST(Mesh, Iterator) {
-    std::string ss = 
+    std::string ss =
         "$MeshFormat\n"
         "2.2 0 8\n"
         "$EndMeshFormat\n"
@@ -89,7 +102,7 @@ TEST(Mesh, Iterator) {
           {1, {mesh::element::Type::QUADRANGLE4, {99, 2}, {1, 2, 3, 4}}}
         , {2, {mesh::element::Type::QUADRANGLE4, {99, 2}, {2, 5, 6, 3}}}
     };
-    mesh::Mesh<float> expected  = {{2.2, 0, 8}, nodes, elements};
+    mesh::Mesh<float> expected  = {{2.2, 0, 8}, {}, nodes, elements};
     mesh::Mesh<float> actual    = mesh::decode<float>(ss.begin(), ss.end());
     EXPECT_EQ(actual.version, expected.version);
 
@@ -97,6 +110,8 @@ TEST(Mesh, Iterator) {
     for (const auto& [k, v] : expected.nodes) {
         EXPECT_EQ(actual.nodes[k], v);
     }
+
+    ASSERT_EQ(actual.physical, expected.physical);
 
     ASSERT_EQ(actual.element.size(), expected.element.size());
     for (const auto& [k, v] : expected.element) {
