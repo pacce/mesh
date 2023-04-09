@@ -1,4 +1,4 @@
-project('mesh', 'cpp', version : '0.1.0', default_options : ['warning_level=3', 'cpp_std=c++20'])
+project('mesh', 'cpp', version : '0.2.0', default_options : ['warning_level=3', 'cpp_std=c++20'])
 
 includes      = include_directories('include')
 dependencies  = [dependency('boost'), dependency('geometry')]
