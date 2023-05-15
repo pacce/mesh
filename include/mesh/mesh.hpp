@@ -4,6 +4,7 @@
 #include <boost/spirit/include/qi.hpp>
 #include <filesystem>
 #include <fstream>
+#include <optional>
 #include <sstream>
 
 #include "mesh-elements.hpp"
@@ -17,7 +18,7 @@ namespace mesh {
         mesh::Version<Precision>            version;
         std::optional<physical::Entities>   physical;
         mesh::node::Map<Precision>          nodes;
-        mesh::element::Map                  element;
+        mesh::element::Map                  elements;
     };
 } // namespace mesh
 
@@ -27,7 +28,7 @@ BOOST_FUSION_ADAPT_TPL_STRUCT(
         (mesh::Version<Precision>,                  version)
         (std::optional<mesh::physical::Entities>,   physical)
         (mesh::node::Map<Precision>,                nodes)
-        (mesh::element::Map,                        element)
+        (mesh::element::Map,                        elements)
         );
 
 namespace mesh {

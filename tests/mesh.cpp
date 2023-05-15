@@ -63,9 +63,9 @@ TEST(Mesh, Grammar) {
 
     ASSERT_EQ(actual.physical, expected.physical);
 
-    ASSERT_EQ(actual.element.size(), expected.element.size());
-    for (const auto& [k, v] : expected.element) {
-        EXPECT_EQ(actual.element[k], v);
+    ASSERT_EQ(actual.elements.size(), expected.elements.size());
+    for (const auto& [k, v] : expected.elements) {
+        EXPECT_EQ(actual.elements[k], v);
     }
 }
 
@@ -113,9 +113,9 @@ TEST(Mesh, Iterator) {
 
     ASSERT_EQ(actual.physical, expected.physical);
 
-    ASSERT_EQ(actual.element.size(), expected.element.size());
-    for (const auto& [k, v] : expected.element) {
-        EXPECT_EQ(actual.element[k], v);
+    ASSERT_EQ(actual.elements.size(), expected.elements.size());
+    for (const auto& [k, v] : expected.elements) {
+        EXPECT_EQ(actual.elements[k], v);
     }
 }
 
